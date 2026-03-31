@@ -163,18 +163,18 @@ document.getElementById('product-form').addEventListener('submit', async (e) => 
 
         if (id) {
             // Editar producto existente
-            const { error } = await supabaseClientClient.from('products').update(productData).eq('id', id);
+            const { error } = await supabaseClient.from('products').update(productData).eq('id', id);
             if (error) throw error;
             showToast('Producto actualizado correctamente');
         } else {
             // Nuevo producto
             productData.stock_quantity = initialStock;
-            const { data, error } = await supabaseClientClient.from('products').insert(productData).select().single();
+            const { data, error } = await supabaseClient.from('products').insert(productData).select().single();
             if (error) throw error;
 
             // Registrar movimiento de stock inicial si > 0
             if (initialStock > 0) {
-                await supabaseClientClient.from('stock_movements').insert({
+                await supabaseClient.from('stock_movements').insert({
                     product_id: data.id,
                     movement_type: 'restock',
                     quantity: initialStock,
@@ -206,7 +206,7 @@ async function uploadProductImage(file, reference) {
     const ext = file.name.split('.').pop();
     const path = `${reference.replace(/[^a-zA-Z0-9-_]/g, '_')}_${Date.now()}.${ext}`;
 
-    const { error } = await supabaseClientClient.storage
+    const { error } = await supabaseClient.storage
         .from('product-images')
         .upload(path, fileToUpload, { upsert: true });
 
@@ -270,7 +270,7 @@ function editProduct(id) {
 async function deleteProduct(id, reference) {
     if (!confirm(`¿Estás seguro de que quieres eliminar el producto "${reference}"? Esta acción no se puede deshacer.`)) return;
 
-    const { error } = await supabaseClientClient.from('products').delete().eq('id', id);
+    const { error } = await supabaseClient.from('products').delete().eq('id', id);
     if (error) {
         showToast('Error al eliminar: ' + error.message, 'error');
         return;

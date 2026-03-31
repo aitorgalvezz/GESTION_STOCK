@@ -56,7 +56,7 @@ async function confirmStockMovement() {
 
         const movementQuantity = type === 'sale' ? -quantity : quantity;
 
-        const { error } = await supabaseClientClient.from('stock_movements').insert({
+        const { error } = await supabaseClient.from('stock_movements').insert({
             product_id: productId,
             movement_type: type,
             quantity: movementQuantity,
