@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joyería - Gestión de Stock</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <main class="container login-container">
+        <article class="login-card">
+            <header>
+                <h1>Gestión de Stock</h1>
+                <p>Introduce tus credenciales para acceder</p>
+            </header>
+
+            <form id="login-form">
+                <label for="email">
+                    Email
+                    <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                </label>
+
+                <label for="password">
+                    Contraseña
+                    <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+                </label>
+
+                <div id="login-error" class="error-message" hidden></div>
+
+                <button type="submit" id="login-btn">Entrar</button>
+            </form>
+        </article>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        redirectIfLoggedIn();
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const errorDiv = document.getElementById('login-error');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            btn.setAttribute('aria-busy', 'true');
+            btn.disabled = true;
+            errorDiv.hidden = true;
+
+            try {
+                await login(email, password);
+                window.location.href = 'app.html';
+            } catch (err) {
+                errorDiv.textContent = 'Credenciales incorrectas. Inténtalo de nuevo.';
+                errorDiv.hidden = false;
+            } finally {
+                btn.setAttribute('aria-busy', 'false');
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
